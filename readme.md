@@ -64,14 +64,14 @@ php yuki grab 4e70ea03c092255ef70046f0
 L'id passé correspond au manga que vous souhaitez télécharger.
 Yuki vous indiquera la progression du téléchargement (notez que cette tâche peut prendre beaucoup de temps suivant le nombre de chapitres).
 
-Une fois le téléchargement terminé, vous pourrez accéder à votre manga dans le dossier ’/mangas/’.
+Une fois le téléchargement terminé, vous pourrez accéder à votre manga dans le dossier `/mangas/`.
 
 
 ## Extension
 
 ### Changer le dossier de téléchargement
 
-Si vous souhaitez changer de dossier de téléchargement, vous devez modifier la ligne suivante dans le fichier ’yuki’ :
+Si vous souhaitez changer de dossier de téléchargement, vous devez modifier la ligne suivante dans le fichier `yuki` :
 
 ```php
 $grabber = new MangaGrabber($provider, '/you/new/path/');
@@ -79,7 +79,7 @@ $grabber = new MangaGrabber($provider, '/you/new/path/');
 
 ### Votre API
 
-Yuki charge par défaut l'API de MangaEden, si vous souhaitez utiliser la votre, il vous suffit de créer une classe implémentant ’grabber\MangaProvider’ :
+Yuki charge par défaut l'API de MangaEden, si vous souhaitez utiliser la votre, il vous suffit de créer une classe implémentant `grabber\MangaProvider` :
 
 ```php
 namespace grabber;
@@ -98,13 +98,13 @@ interface MangaProvider
 }
 ```
 
-Et de la passer à l'objet MangaGrabber dans le fichier ’yuki’ :
+Et de la passer à l'objet MangaGrabber dans le fichier `yuki` :
 
 ```php
 $provider = new my\provider\MyProvider();
 $grabber = new MangaGrabber($provider, '/you/new/path/');
 ```
 
-Voir la classe ’grabber\provider\MangaEdenProvider’ pour un exemple concret.
+Voir la classe `grabber\provider\MangaEdenProvider` pour un exemple concret.
 
 ## Et voilà :)
