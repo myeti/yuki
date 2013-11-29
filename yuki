@@ -1,0 +1,109 @@
+<?php
+
+/**
+ * Welcome, I'm Yuki, your personnal Manga Grabber
+ * I need PHP5.4+ and CLI access
+ *
+ * @author Aymeric Assier <aymeric.assier@gmail.com>
+ */
+
+
+/**
+ * Quick Autoloader
+ * @param string $classname
+ */
+function __autoload($classname)
+{
+    $root = dirname(__FILE__) . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR;
+    require_once $root . str_replace('\\', DIRECTORY_SEPARATOR, $classname) . '.php';
+}
+
+
+/**
+ * Setup Grabber
+ */
+
+use grabber\provider\MangaEdenProvider;
+use grabber\MangaGrabber;
+
+$provider = new MangaEdenProvider();
+$grabber = new MangaGrabber($provider, __DIR__ . '/mangas/');
+
+
+/**
+ * Console
+ */
+
+use cli\Console;
+
+// landing command
+Console::welcome(function(){
+
+	Console::say();
+	Console::say([
+		'Hello ! Welcome, I\'m Yuki, your personnal Manga Grabber !',
+		'- list : get the full manga list',
+		'- find [manga_name] : search mangas that match the name',
+		'- grab [manga_id] : download all chapters into the root directory'
+	]);
+	Console::say();
+
+});
+
+// list command
+Console::command('list', function() use($grabber) {
+
+	Console::say('Asking provider...');
+
+	$list = $grabber->getMangas();
+	foreach($list as $id => $name) {
+		Console::say($id . "\t" . $name);
+	}
+
+});
+
+// find command
+Console::command('find [search]', function($search) use($grabber) {
+
+	Console::say('Asking provider...');
+	$found = false;
+
+	$mangas = $grabber->getMangas();
+	foreach($mangas as $id => $name) {
+		if(stripos($name, $search) !== false) {
+			Console::say($id . "\t" . $name);
+			$found = true;
+		}
+	}
+
+	if(!$found) {
+		Console::say('Sorry, cound not find "' . $search . '"');
+	}
+
+});
+
+// grab command
+Console::command('grab [manga]', function($manga) use($grabber) {
+
+	$grabber->on('grab.start', function(){
+		Console::say('Asking provider...');
+	});
+
+	$grabber->on('grab.index.start', function(){
+		Console::say('Making index list...');
+	});
+
+	$grabber->on('grab.index.end', function($args){
+		Console::say($args['totalChapters'] . ' chapters, ' . $args['totalPages'] . ' pages.');
+	});
+
+	$grabber->on('grab.download', function($args){
+		Console::replace('Downloading "' . $args['title'] . '" : ' . number_format(($args['done'] * 100) / $args['total'], 2) . '%');
+	});
+
+	$grabber->grab($manga);
+
+});
+
+// let's go !
+Console::plug();
