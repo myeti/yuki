@@ -108,3 +108,5 @@ $grabber = new MangaGrabber($provider, '/you/new/path/');
 Voir la classe `grabber\provider\MangaEdenProvider` pour un exemple concret.
 
 ## Et voilà :)
+
+*Bubble is under the DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE*
